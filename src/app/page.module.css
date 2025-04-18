@@ -9,7 +9,26 @@
 }
 
 .board {
+  display: flex;
+  flex-wrap: wrap;
   width: 640px;
   height: 640px;
-  background-color: rgb(46 160 46);
+  background-color: hwb(135deg 9% 55%);
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #000;
+}
+
+.stone {
+  display: block;
+  width: 56px;
+  height: 56px;
+  background-color: white;
+  border-radius: 50%;
 }
