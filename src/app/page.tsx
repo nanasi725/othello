@@ -7,10 +7,10 @@ export default function Home() {
   const [turnColor, setTurnColor] = useState(1);
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 2, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 2, 0, 0, 0],
-    [0, 0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -20,36 +20,43 @@ export default function Home() {
     console.log(x, y);
     const newBoard = structuredClone(board);
     setBoard(newBoard);
-    if (board[y - 1]?.[x] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //上
+    if (board[y + 1] !== undefined && board[y + 1][x] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
-    if (board[y - 1]?.[x+1] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //下
+    if (board[y - 1] !== undefined && board[y - 1][x] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
-    if (board[y]?.[x-1] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //右
+    if (board[x + 1] !== undefined && board[y][x + 1] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
-    if (board[y + 1]?.[x + 1] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //左
+    if (board[x - 1] !== undefined && board[y][x - 1] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
-    if (board[y + 1]?.[x] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //右上斜め
+    if (board[y + 1] !== undefined && board[y + 1][x + 1] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
-    if (board[y + 1]?.[x-1] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //右下斜め
+    if (board[y - 1] !== undefined && board[y - 1][x + 1] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
-    if (board[y]?.[x-1] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //左上斜め
+    if (board[y + 1] !== undefined && board[y + 1][x - 1] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
-    ＃左上
-    if (board[y - 1]?.[x] !== undefined && board[y + 1][x] === 3 - turnColor) {
+    //左下斜め
+    if (board[y - 1] !== undefined && board[y - 1][x - 1] === 3 - turnColor) {
       newBoard[y][x] = turnColor;
       setTurnColor(3 - turnColor);
     }
