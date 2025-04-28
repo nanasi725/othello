@@ -16,52 +16,42 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
+  // ８方向のベクトル [dx, dy]
+  const deltas: [number, number][] = [
+    [0, 1], // ↑
+    [0, -1], // ↓
+    [1, 0], // →
+    [-1, 0], // ←
+    [1, 1], // ↗
+    [1, -1], // ↘
+    [-1, 1], // ↖
+    [-1, -1], // ↙
+  ];
+
   const clickHandler = (x: number, y: number) => {
-    console.log(x, y);
+    // すでに石があるマスは何もしない
+    if (board[y][x] !== 0) return;
+
+    const me = turnColor;
+    const opp = 3 - me; // 自分が1なら相手は2、2なら1
+    // board を壊さないようコピー
     const newBoard = structuredClone(board);
-    setBoard(newBoard);
-    //上
-    if (board[y + 1] !== undefined && board[y + 1][x] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
-    }
-    //下
-    if (board[y - 1] !== undefined && board[y - 1][x] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
-    }
-    //右
-    if (board[x + 1] !== undefined && board[y][x + 1] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
-    }
-    //左
-    if (board[x - 1] !== undefined && board[y][x - 1] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
-    }
-    //右上斜め
-    if (board[y + 1] !== undefined && board[y + 1][x + 1] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
-    }
-    //右下斜め
-    if (board[y - 1] !== undefined && board[y - 1][x + 1] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
-    }
-    //左上斜め
-    if (board[y + 1] !== undefined && board[y + 1][x - 1] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
-    }
-    //左下斜め
-    if (board[y - 1] !== undefined && board[y - 1][x - 1] === 3 - turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(3 - turnColor);
+
+    // 隣接８方向のどこかに相手駒がいたら「置ける」と判断
+    const canPlace = deltas.some(([dx, dy]) => {
+      return newBoard[y + dy]?.[x + dx] === opp;
+    });
+
+    if (!canPlace) {
+      // １つも隣接相手駒がなければ何もしない
+      return;
     }
 
+    // 置く
+    newBoard[y][x] = me;
     setBoard(newBoard);
+    // 手番交代
+    setTurnColor(opp as 1 | 2);
   };
   return (
     <div className={styles.container}>
