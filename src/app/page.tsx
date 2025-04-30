@@ -17,7 +17,7 @@ export default function Home() {
   ]);
 
   // ８方向のベクトル [dx, dy]
-  const deltas: [number, number][] = [
+  const _deltas: [number, number][] = [
     [0, 1], // ↑
     [0, -1], // ↓
     [1, 0], // →
@@ -29,29 +29,40 @@ export default function Home() {
   ];
 
   const clickHandler = (x: number, y: number) => {
-    // すでに石があるマスは何もしない
+    // 1) すでに石があるマスは何もしない
     if (board[y][x] !== 0) return;
 
-    const me = turnColor;
-    const opp = 3 - me; // 自分が1なら相手は2、2なら1
-    // board を壊さないようコピー
+    // 2) 自分と相手の色を数値で決める
+    const me = turnColor; // 1 または 2
+    const opp = 3 - turnColor; // 2 または 1
+
+    // 3) board を壊さないようコピー
     const newBoard = structuredClone(board);
 
-    // 隣接８方向のどこかに相手駒がいたら「置ける」と判断
-    const canPlace = deltas.some(([dx, dy]) => {
-      return newBoard[y + dy]?.[x + dx] === opp;
-    });
-
-    if (!canPlace) {
-      // １つも隣接相手駒がなければ何もしない
-      return;
+    // --- ここから「右方向だけ」の裏返しロジック ---
+    // 4) 右隣から相手駒が続くだけ path にためる
+    let nx = x + 1;
+    const path: [number, number][] = [];
+    while (nx < 8 && newBoard[y][nx] === opp) {
+      path.push([nx, y]);
+      nx += 1;
     }
 
-    // 置く
-    newBoard[y][x] = me;
-    setBoard(newBoard);
-    // 手番交代
-    setTurnColor(opp as 1 | 2);
+    // 5) path に石が溜まっていて、その先に自分の駒があれば裏返し可
+    if (path.length > 0 && nx < 8 && newBoard[y][nx] === me) {
+      // (a) クリックしたマスにも自分の駒を置く
+      newBoard[y][x] = me;
+
+      // (b) path に溜まった座標をすべて自分の色にひっくり返す
+      path.forEach(([fx, fy]) => {
+        newBoard[fy][fx] = me;
+      });
+
+      // 6) state を更新して手番交代
+      setBoard(newBoard);
+      setTurnColor(opp as 1 | 2);
+    }
+    // --- ここまで右方向だけ ---
   };
   return (
     <div className={styles.container}>
