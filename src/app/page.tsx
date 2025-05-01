@@ -16,53 +16,57 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  // ８方向のベクトル [dx, dy]
-  const _deltas: [number, number][] = [
-    [0, 1], // ↑
-    [0, -1], // ↓
-    [1, 0], // →
-    [-1, 0], // ←
-    [1, 1], // ↗
-    [1, -1], // ↘
-    [-1, 1], // ↖
-    [-1, -1], // ↙
+  // ８方向の差分ベクトル [dx, dy]
+  const deltas: [number, number][] = [
+    [1, 0], // → 右
+    [-1, 0], // ← 左
+    [0, 1], // ↑ 上
+    [0, -1], // ↓ 下
+    [1, 1], // ↗ 右上
+    [1, -1], // ↘ 右下
+    [-1, 1], // ↖ 左上
+    [-1, -1], // ↙ 左下
   ];
 
   const clickHandler = (x: number, y: number) => {
-    // 1) すでに石があるマスは何もしない
+    // 置けるマスかチェック
     if (board[y][x] !== 0) return;
 
-    // 2) 自分と相手の色を数値で決める
-    const me = turnColor; // 1 または 2
-    const opp = 3 - turnColor; // 2 または 1
-
-    // 3) board を壊さないようコピー
+    const me = turnColor; // 今の手番
+    const opp = 3 - turnColor; // 相手の色
+    // board の不変性を保つため深いコピー
     const newBoard = structuredClone(board);
+    let flippedAny = false;
 
-    // --- ここから「右方向だけ」の裏返しロジック ---
-    // 4) 右隣から相手駒が続くだけ path にためる
-    let nx = x + 1;
-    const path: [number, number][] = [];
-    while (nx < 8 && newBoard[y][nx] === opp) {
-      path.push([nx, y]);
-      nx += 1;
-    }
+    // ８方向すべてをチェック
+    deltas.forEach(([dx, dy]) => {
+      let nx = x + dx;
+      let ny = y + dy;
+      const path: [number, number][] = [];
 
-    // 5) path に石が溜まっていて、その先に自分の駒があれば裏返し可
-    if (path.length > 0 && nx < 8 && newBoard[y][nx] === me) {
-      // (a) クリックしたマスにも自分の駒を置く
+      // 相手駒が連続する限り path に蓄積
+      while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && newBoard[ny][nx] === opp) {
+        path.push([nx, ny]);
+        nx += dx;
+        ny += dy;
+      }
+
+      // path に１つ以上あって、その先が自分駒なら挟めている
+      if (path.length > 0 && nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && newBoard[ny][nx] === me) {
+        // path 中のすべての駒をひっくり返す
+        path.forEach(([fx, fy]) => {
+          newBoard[fy][fx] = me;
+        });
+        flippedAny = true;
+      }
+    });
+
+    // １つでも返せたらクリック地点に駒を置いて state 更新
+    if (flippedAny) {
       newBoard[y][x] = me;
-
-      // (b) path に溜まった座標をすべて自分の色にひっくり返す
-      path.forEach(([fx, fy]) => {
-        newBoard[fy][fx] = me;
-      });
-
-      // 6) state を更新して手番交代
       setBoard(newBoard);
       setTurnColor(opp as 1 | 2);
     }
-    // --- ここまで右方向だけ ---
   };
   return (
     <div className={styles.container}>
