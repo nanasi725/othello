@@ -16,24 +16,22 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  // ８方向の差分ベクトル [dx, dy]
+  // ８方向のベクトル [dx, dy]
   const deltas: [number, number][] = [
-    [1, 0], // → 右
-    [-1, 0], // ← 左
-    [0, 1], // ↑ 上
-    [0, -1], // ↓ 下
-    [1, 1], // ↗ 右上
-    [1, -1], // ↘ 右下
-    [-1, 1], // ↖ 左上
-    [-1, -1], // ↙ 左下
+    [1, 0], //  右
+    [-1, 0], //  左
+    [0, 1], //  上
+    [0, -1], //  下
+    [1, 1], //  右上
+    [1, -1], //  右下
+    [-1, 1], // 左上
+    [-1, -1], // 左下
   ];
 
   const clickHandler = (x: number, y: number) => {
-    // 置けるマスかチェック
     if (board[y][x] !== 0) return;
-
-    const me = turnColor; // 今の手番
-    const opp = 3 - turnColor; // 相手の色
+    const me = turnColor;
+    const opp = 3 - turnColor;
     // board の不変性を保つため深いコピー
     const newBoard = structuredClone(board);
     let flippedAny = false;
