@@ -66,6 +66,7 @@ export default function Home() {
       setTurnColor(opp as 1 | 2);
     }
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.board}>

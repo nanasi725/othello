@@ -8,6 +8,22 @@
   padding: 0 0.5rem;
 }
 
+.playArea {
+  display: flex;
+  align-items: flex-start;
+}
+
+.countr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 60px;
+  margin-left: 20px;
+  color: #333;
+  background: linear-gradient(135deg, #ffeb3b, #ffc107);
+}
+
 .board {
   display: flex;
   flex-wrap: wrap;
