@@ -28,15 +28,31 @@
   background-color: hwb(135deg 9% 55%);
 }
 
-.count {
+.counts {
+  display: flex;
+  gap: 12px;
+  margin-left: 20px;
+}
+
+.countBox {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 60px;
-  margin-left: 20px;
+  width: 96px;
+  height: 48px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.countBoxBlack {
+  color: #fff;
+  background: linear-gradient(135deg, #444, #000);
+}
+
+.countBoxWhite {
   color: #333;
-  background: linear-gradient(135deg, #000, #fff);
+  background: linear-gradient(135deg, #fff, #ddd);
 }
 
 .cell {

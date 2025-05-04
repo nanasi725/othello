@@ -16,7 +16,6 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  /* ８方向ベクトル */
   const deltas: [number, number][] = [
     [1, 0],
     [-1, 0],
@@ -59,9 +58,10 @@ export default function Home() {
     }
   };
 
-  // 石の数をカウント
-  const blackCount = board.flat().filter((c) => c === 1).length;
-  const whiteCount = board.flat().filter((c) => c === 2).length;
+  // 黒・白の石の数をカウント
+  const flat = board.flat();
+  const blackCount = flat.filter((c) => c === 1).length;
+  const whiteCount = flat.filter((c) => c === 2).length;
 
   return (
     <div className={styles.container}>
@@ -74,9 +74,7 @@ export default function Home() {
                 {color !== 0 && (
                   <div
                     className={styles.stone}
-                    style={{
-                      background: color === 1 ? '#000' : '#fff',
-                    }}
+                    style={{ background: color === 1 ? '#000' : '#fff' }}
                   />
                 )}
               </div>
@@ -85,9 +83,9 @@ export default function Home() {
         </div>
 
         {/* カウント表示 */}
-        <div className={styles.count}>
-          <div>Black: {blackCount}</div>
-          <div>White: {whiteCount}</div>
+        <div className={styles.counts}>
+          <div className={`${styles.countBox} ${styles.countBoxBlack}`}>Black {blackCount}</div>
+          <div className={`${styles.countBox} ${styles.countBoxWhite}`}>White {whiteCount}</div>
         </div>
       </div>
     </div>
