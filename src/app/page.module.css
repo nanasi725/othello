@@ -13,15 +13,11 @@
   align-items: flex-start;
 }
 
-.countr {
+.wrapper {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  height: 60px;
-  margin-left: 20px;
-  color: #333;
-  background: linear-gradient(135deg, #ffeb3b, #ffc107);
+  gap: 20px; /* 要素間の隙間をまとめて指定 */
+  align-items: center; /* 高さ中央揃え */
+  justify-content: flex-start; /* 左寄せ（デフォルト）  */
 }
 
 .board {
@@ -30,6 +26,17 @@
   width: 640px;
   height: 640px;
   background-color: hwb(135deg 9% 55%);
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 60px;
+  margin-left: 20px;
+  color: #333;
+  background: linear-gradient(135deg, #ffeb3b, #ffc107);
 }
 
 .cell {
