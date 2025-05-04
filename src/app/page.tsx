@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -16,16 +16,53 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const deltas: [number, number][] = [
-    [1, 0],
-    [-1, 0],
-    [0, 1],
-    [0, -1],
-    [1, 1],
-    [1, -1],
-    [-1, 1],
-    [-1, -1],
-  ];
+  // ← useMemo で一度だけ作る
+  const deltas = useMemo<[number, number][]>(
+    () => [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+    ],
+    [],
+  );
+  //______________________________________________________________________
+  // 盤面上のどこにも置けないときは自動パス
+  useEffect(() => {
+    const me = turnColor;
+    const opp = (3 - me) as 1 | 2;
+    let hasMove = false;
+
+    outer: for (let y = 0; y < 8; y++) {
+      for (let x = 0; x < 8; x++) {
+        if (board[y][x] !== 0) continue;
+        for (const [dx, dy] of deltas) {
+          let nx = x + dx,
+            ny = y + dy,
+            foundOpp = false;
+          while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === opp) {
+            foundOpp = true;
+            nx += dx;
+            ny += dy;
+          }
+          if (foundOpp && nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === me) {
+            hasMove = true;
+            break outer;
+          }
+        }
+      }
+    }
+
+    if (!hasMove) {
+      console.log(`${me === 1 ? 'Black' : 'White'} has no moves → pass`);
+      setTurnColor(opp);
+    }
+  }, [board, turnColor, deltas]);
+  //_______________________________________________________________________
 
   const clickHandler = (x: number, y: number) => {
     if (board[y][x] !== 0) return;
@@ -57,40 +94,6 @@ export default function Home() {
       setTurnColor(opp as 1 | 2);
     }
   };
-
-  // "置ける場所がない" ときは自動でパス（手番交代）する
-  useEffect(() => {
-    const me = turnColor;
-    const opp = (3 - me) as 1 | 2;
-    let hasMove = false;
-
-    // 盤面上のすべての空マスを調べて、
-    // どこかに有効手があれば hasMove = true
-    outer: for (let y = 0; y < 8; y++) {
-      for (let x = 0; x < 8; x++) {
-        if (board[y][x] !== 0) continue;
-        for (const [dx, dy] of deltas) {
-          let nx = x + dx,
-            ny = y + dy;
-          let foundOpp = false;
-          while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === opp) {
-            foundOpp = true;
-            nx += dx;
-            ny += dy;
-          }
-          if (foundOpp && nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[ny][nx] === me) {
-            hasMove = true;
-            break outer;
-          }
-        }
-      }
-    }
-
-    if (!hasMove) {
-      console.log(`${me === 1 ? 'Black' : 'White'} has no moves → pass`);
-      setTurnColor(opp);
-    }
-  }, [board, turnColor, deltas]);
 
   // 黒・白の石の数をカウント
   const flat = board.flat();
