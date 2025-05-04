@@ -4,8 +4,8 @@ import { useState } from 'react';
 import styles from './page.module.css';
 
 export default function Home() {
-  const [turnColor, setTurnColor] = useState(1);
-  const [board, setBoard] = useState([
+  const [turnColor, setTurnColor] = useState<1 | 2>(1);
+  const [board, setBoard] = useState<number[][]>([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -16,42 +16,35 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  // ８方向のベクトル [dx, dy]
+  /* ８方向ベクトル */
   const deltas: [number, number][] = [
-    [1, 0], //  右
-    [-1, 0], //  左
-    [0, 1], //  上
-    [0, -1], //  下
-    [1, 1], //  右上
-    [1, -1], //  右下
-    [-1, 1], // 左上
-    [-1, -1], // 左下
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1],
   ];
 
   const clickHandler = (x: number, y: number) => {
     if (board[y][x] !== 0) return;
-    const me = turnColor;
-    const opp = 3 - turnColor;
-    // board の不変性を保つため深いコピー
+    const me = turnColor,
+      opp = 3 - turnColor;
     const newBoard = structuredClone(board);
     let flippedAny = false;
 
-    // ８方向すべてをチェック
     deltas.forEach(([dx, dy]) => {
-      let nx = x + dx;
-      let ny = y + dy;
+      let nx = x + dx,
+        ny = y + dy;
       const path: [number, number][] = [];
-
-      // 相手駒が連続する限り path に蓄積
       while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && newBoard[ny][nx] === opp) {
         path.push([nx, ny]);
         nx += dx;
         ny += dy;
       }
-
-      // path に１つ以上あって、その先が自分駒なら挟めている
       if (path.length > 0 && nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && newBoard[ny][nx] === me) {
-        // path 中のすべての駒をひっくり返す
         path.forEach(([fx, fy]) => {
           newBoard[fy][fx] = me;
         });
@@ -59,7 +52,6 @@ export default function Home() {
       }
     });
 
-    // １つでも返せたらクリック地点に駒を置いて state 更新
     if (flippedAny) {
       newBoard[y][x] = me;
       setBoard(newBoard);
@@ -67,21 +59,36 @@ export default function Home() {
     }
   };
 
+  // 石の数をカウント
+  const blackCount = board.flat().filter((c) => c === 1).length;
+  const whiteCount = board.flat().filter((c) => c === 2).length;
+
   return (
     <div className={styles.container}>
-      <div className={styles.board}>
-        {board.map((row, y) =>
-          row.map((color, x) => (
-            <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)}>
-              {color !== 0 && (
-                <div
-                  className={styles.stone}
-                  style={{ background: color === 1 ? `#000` : `#fff` }}
-                />
-              )}
-            </div>
-          )),
-        )}
+      <div className={styles.wrapper}>
+        {/* 盤面 */}
+        <div className={styles.board}>
+          {board.map((row, y) =>
+            row.map((color, x) => (
+              <div key={`${x}-${y}`} className={styles.cell} onClick={() => clickHandler(x, y)}>
+                {color !== 0 && (
+                  <div
+                    className={styles.stone}
+                    style={{
+                      background: color === 1 ? '#000' : '#fff',
+                    }}
+                  />
+                )}
+              </div>
+            )),
+          )}
+        </div>
+
+        {/* カウント表示 */}
+        <div className={styles.count}>
+          <div>Black: {blackCount}</div>
+          <div>White: {whiteCount}</div>
+        </div>
       </div>
     </div>
   );

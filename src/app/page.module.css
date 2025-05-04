@@ -15,9 +15,9 @@
 
 .wrapper {
   display: flex;
-  gap: 20px; /* 要素間の隙間をまとめて指定 */
-  align-items: center; /* 高さ中央揃え */
-  justify-content: flex-start; /* 左寄せ（デフォルト）  */
+  gap: 20px;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .board {
@@ -36,7 +36,7 @@
   height: 60px;
   margin-left: 20px;
   color: #333;
-  background: linear-gradient(135deg, #ffeb3b, #ffc107);
+  background: linear-gradient(135deg, #000, #fff);
 }
 
 .cell {
